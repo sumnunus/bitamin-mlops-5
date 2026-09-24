@@ -8,7 +8,13 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import (
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+    roc_auc_score,
+)
 
 
 # 1. 데이터 로드
@@ -80,6 +86,14 @@ X_train = preprocessor.fit_transform(X_train)
 X_test = preprocessor.transform(X_test)
 
 
+def print_metrics(name, y_true, y_pred, y_proba):
+    print(f"{name} Accuracy: {accuracy_score(y_true, y_pred):.4f}")
+    print(f"{name} Precision: {precision_score(y_true, y_pred, pos_label='Yes'):.4f}")
+    print(f"{name} Recall: {recall_score(y_true, y_pred, pos_label='Yes'):.4f}")
+    print(f"{name} F1: {f1_score(y_true, y_pred, pos_label='Yes'):.4f}")
+    print(f"{name} ROC-AUC: {roc_auc_score(y_true == 'Yes', y_proba):.4f}")
+
+
 # 7. Logistic Regression 모델 학습
 model = LogisticRegression(max_iter=1000)
 model.fit(X_train, y_train)
@@ -87,9 +101,10 @@ model.fit(X_train, y_train)
 
 # 8. Logistic Regression 평가
 y_pred = model.predict(X_test)
+y_proba = model.predict_proba(X_test)[:, list(model.classes_).index("Yes")]
 acc = accuracy_score(y_test, y_pred)
 
-print(f"Logistic Regression Accuracy: {acc:.4f}")
+print_metrics("Logistic Regression", y_test, y_pred, y_proba)
 
 
 # 9. Random Forest 모델 학습
@@ -99,7 +114,8 @@ rf_model.fit(X_train, y_train)
 
 # 10. Random Forest 평가 및 기존 모델과 비교
 rf_y_pred = rf_model.predict(X_test)
+rf_y_proba = rf_model.predict_proba(X_test)[:, list(rf_model.classes_).index("Yes")]
 rf_acc = accuracy_score(y_test, rf_y_pred)
 
-print(f"Random Forest Accuracy: {rf_acc:.4f}")
+print_metrics("Random Forest", y_test, rf_y_pred, rf_y_proba)
 print(f"Accuracy Difference (RF - LR): {rf_acc - acc:.4f}")
