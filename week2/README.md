@@ -29,6 +29,8 @@
 
 ![Random Forest PR 코드 리뷰](<./images/pr1 코멘트.png>)
 
+![Random Forest PR 코드 리뷰 (hoofitech)](<./images/pr1 코멘트(hoofitech).png>)
+
 ### 전처리 파이프라인 개선
 
 ![전처리 파이프라인 PR 코드 리뷰](<./images/pr2 코멘트.png>)
