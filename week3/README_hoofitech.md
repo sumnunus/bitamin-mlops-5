@@ -83,6 +83,8 @@ python week3/train.py --model rf --max_depth 6 --save
 ```
 
 - `models/churn_model.joblib` 저장 (git 제외, `.gitignore`)
+
+![models/churn_model.joblib](./images-hoofitech/models-ls.png)
 - W&B Artifact `churn-model` (type: model) 업로드 완료
 
 W&B 프로젝트 Artifacts에 `churn-model` (type: model) `v0 latest`가 업로드되었습니다.
