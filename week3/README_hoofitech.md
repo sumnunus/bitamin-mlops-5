@@ -8,18 +8,20 @@
 
 Team `piropilho-bitamina-digital`에 조원이 참여했습니다.
 
-> TODO: Team 멤버 목록 캡처 추가 (`images-hoofitech/team-members.png`)
+![Team 멤버 목록](./images-hoofitech/team-members.png)
+
+Members (4): `ghkdalsdn312`, `sumnunus`, `joshinflight1122`, `piropilho`
 
 ## 필수 2. 조원 전원 첫 W&B run 기록
 
 `train.py`의 `ENTITY`를 조 Team 이름으로 설정해 run이 개인 계정이 아닌 Team 프로젝트에 기록됩니다.
-조원 4명(`joshinflight1122`, `piropilh`, `sumnunus`, `ghkdalsd`)의 run이 프로젝트에 기록되어 있습니다.
+조원 4명(`ghkdalsdn312`, `sumnunus`, `joshinflight1122`, `piropilho`) 모두 run을 기록했습니다.
 
-> TODO: 조 프로젝트 Runs 목록 캡처 추가 (`images-hoofitech/runs.png`)
+![조 프로젝트 Runs 목록](./images-hoofitech/runs.png)
 
 ## 필수 3. 조 전체 6개 이상 실험 비교
 
-모델 3종(logreg / rf / gb), 서로 다른 조건 10개 이상, 총 run 18개를 비교했습니다.
+모델 3종(logreg / rf / gb), 서로 다른 조건 8개, 총 run 20개를 비교했습니다.
 각 run은 `train/*`, `valid/*`, `gap/roc_auc`를 함께 기록합니다. (`gap/roc_auc` = train AUC − valid AUC, 클수록 과적합)
 
 ### valid 기준 상위 run (valid/f1 순)
@@ -60,7 +62,7 @@ Team `piropilho-bitamina-digital`에 조원이 참여했습니다.
 - 기준 지표: `valid/f1` (Recall을 함께 확인)
 - 선정: **Random Forest, `max_depth=6`** (`n_estimators=200`, `class_weight=balanced`)
 - 근거
-  - valid f1 0.650으로 18개 run 중 1위
+  - valid f1 0.650으로 전체 run 중 1위
   - Recall 0.829로 놓치는 이탈 고객이 적음 (이탈 예측은 놓친 이탈 고객이 적을수록 좋음)
   - gap -0.004로 과적합 없음
   - 대안인 logreg balanced와 f1 차이가 0.01 이내라 큰 차이는 아님
