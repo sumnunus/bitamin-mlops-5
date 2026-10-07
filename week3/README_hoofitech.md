@@ -45,7 +45,9 @@ Members (4): `ghkdalsdn312`, `sumnunus`, `joshinflight1122`, `piropilho`
 - 깊이 제한이 없는 RF와 lr 0.3 GB가 과적합입니다. gap이 클수록 valid AUC가 낮습니다.
 - 깊이를 6으로 제한하면 RF의 gap이 +0.162에서 -0.004로 줄고 AUC가 0.837에서 0.867로 오릅니다.
 
-> TODO: `valid/roc_auc` 정렬 Runs 표 캡처 추가 (`images-hoofitech/runs-sorted.png`)
+### Runs 표 (`valid/roc_auc` 내림차순 정렬 + `valid/recall`, `gap/roc_auc` 컬럼 + Group `model`)
+
+![정렬한 Runs 표](./images-hoofitech/runs-sorted.jpg)
 
 ## 필수 4. 평가 그래프 기록
 
@@ -53,7 +55,7 @@ Members (4): `ghkdalsdn312`, `sumnunus`, `joshinflight1122`, `piropilho`
 
 - run: https://wandb.ai/piropilho-bitamina-digital/bitamin17-week3-churn/runs/jz7i0orz
 
-> TODO: 혼동행렬 · ROC 곡선 패널 캡처 추가 (`images-hoofitech/eval-plots.png`)
+![혼동행렬 · ROC 곡선 패널](./images-hoofitech/eval-plots.png)
 
 ## 필수 5. 최종 모델 저장
 
@@ -83,4 +85,6 @@ python week3/train.py --model rf --max_depth 6 --save
 - `models/churn_model.joblib` 저장 (git 제외, `.gitignore`)
 - W&B Artifact `churn-model` (type: model) 업로드 완료
 
-> TODO: `models/churn_model.joblib` 터미널 캡처, Artifacts `churn-model` 화면 캡처 추가 (`images-hoofitech/artifact.png`)
+W&B 프로젝트 Artifacts에 `churn-model` (type: model) `v0 latest`가 업로드되었습니다.
+
+![churn-model Artifact](./images-hoofitech/artifact.jpg)
