@@ -26,7 +26,7 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 import joblib
 import wandb
 
-ENTITY = "bitamin17-mlops-5"    # 우리 조 Team 이름
+ENTITY = "piropilho-bitamina-digital"    # 우리 조 Team 이름
 PROJECT = "bitamin17-week3-churn"
 
 ROOT = Path(__file__).resolve().parent.parent  # 조별 repo 최상위 폴더
