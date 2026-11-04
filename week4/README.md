@@ -1,57 +1,78 @@
-# Week 4 — FastAPI 모델 서빙
+# Week4 — FastAPI 모델 서빙
 
-`week3`에서 저장한 `churn_model.joblib`(sklearn Pipeline)을 FastAPI로 서빙한다.
+3주차에 저장한 `churn_model.joblib`(전처리 + RandomForest Pipeline)을 FastAPI로 감싸 `POST /predict`로 이탈 예측을 제공한다.
+
+## 실행
 
 ```bash
-cd week4
-python -m venv .venv && source .venv/bin/activate
+source .venv/bin/activate
 pip install -r requirements.txt
 uvicorn main:app --reload
 ```
 
-| 파일 | 역할 |
-| --- | --- |
-| `main.py` | 앱, 서버 시작 시 모델 1회 로드(`lifespan`), `GET /`, `POST /predict` |
-| `schema.py` | 고객 정보 입력용 Pydantic 스키마 `CustomerInput` (+ Swagger 예시값) |
-| `churn_model.joblib` | 전처리 + 모델이 함께 저장된 Pipeline |
+- Swagger: http://127.0.0.1:8000/docs
 
 ## API 명세
 
-`POST /predict` — 입력(19개 필드, `schema.py` 참고) → 출력
+| 메서드 | 경로 | 설명 |
+|---|---|---|
+| GET | `/` | 서버 확인 → `{"message": "ok"}` |
+| POST | `/predict` | 고객 정보로 이탈 예측 |
+
+### 입력 (Request Body, JSON)
+
+3주차 학습 데이터(X_train)와 같은 19개 컬럼. 하나라도 빠지거나 타입이 틀리면 **422**.
+
+| 필드 | 타입 | 값 |
+|---|---|---|
+| gender | str | Female / Male |
+| SeniorCitizen | int | 0 / 1 |
+| Partner, Dependents, PhoneService, PaperlessBilling | str | Yes / No |
+| tenure | int | 가입 개월 수 |
+| MultipleLines | str | Yes / No / No phone service |
+| InternetService | str | DSL / Fiber optic / No |
+| OnlineSecurity, OnlineBackup, DeviceProtection, TechSupport, StreamingTV, StreamingMovies | str | Yes / No / No internet service |
+| Contract | str | Month-to-month / One year / Two year |
+| PaymentMethod | str | Electronic check / Mailed check / Bank transfer (automatic) / Credit card (automatic) |
+| MonthlyCharges | float | 월 요금 |
+| TotalCharges | float | 누적 요금 |
 
 ```json
-{"churn": 1, "churn_probability": 0.851}
+{
+  "gender": "Female", "SeniorCitizen": 0, "Partner": "No", "Dependents": "No",
+  "tenure": 12, "PhoneService": "Yes", "MultipleLines": "No",
+  "InternetService": "Fiber optic", "OnlineSecurity": "No", "OnlineBackup": "No",
+  "DeviceProtection": "No", "TechSupport": "No", "StreamingTV": "No",
+  "StreamingMovies": "No", "Contract": "Month-to-month", "PaperlessBilling": "Yes",
+  "PaymentMethod": "Electronic check", "MonthlyCharges": 70.5, "TotalCharges": 846.0
+}
 ```
 
-형식이 틀린 입력은 모델에 닿기 전에 `422`로 차단된다.
+### 출력 (200 OK)
+
+```json
+{"churn": 1, "churn_probability": 0.80412358901082}
+```
+
+- `churn`: 예측 라벨 (1 = 이탈)
+- `churn_probability`: 클래스 1(이탈)의 확률
+
+같은 입력으로 로컬에서 `model.predict_proba` 결과(0.80412358901081...)와 API 응답이 일치함을 확인했다 → 전처리 재현 OK.
 
 ## 체크포인트
 
 ### 1. FastAPI 서버 기동 및 Swagger 접속
-`http://127.0.0.1:8000/docs`
-
-![cp1](images/cp1-docs.png)
+![cp1](captures/01_swagger_docs.png)
 
 ### 2. Pydantic 스키마 정의
-`schema.py`의 `CustomerInput`이 Swagger Schemas에 표시된다.
+![cp2](captures/02_schema.png)
 
-![cp2](images/cp2-schema.png)
-
-### 3. 모델 로드 및 `/predict` 구현
-코드는 `main.py` 참고. `lifespan`에서 서버 시작 시 `churn_model.joblib`을 1번만 로드한다.
-
-![cp3](images/cp3-startup-log.png)
+### 3. 모델 로드 및 /predict 구현 (코드와 기동 로그)
+![cp3](captures/03_model_load.png)
 
 ### 4. Swagger에서 예측 요청 성공
-POST `/predict` → Try it out → Execute → 200
-
-![cp4](images/cp4-swagger-predict.png)
+![cp4](captures/04_swagger_predict.png)
 
 ### 5. Postman으로 동일 요청 테스트
-같은 고객 데이터로 POST → `200 OK`, Swagger와 같은 확률
-
-![cp5](images/cp5-postman.png)
-
-`{"churn": 1, "churn_probability": 0.85102503974859}`
-
-형식이 틀린 입력(예: `{"tenure":"abc"}`)은 `422`로 차단된다.
+`POST http://127.0.0.1:8000/predict`, Body → raw → JSON에 위 입력 예시를 넣고 Send.
+![cp5](captures/05_postman.png)

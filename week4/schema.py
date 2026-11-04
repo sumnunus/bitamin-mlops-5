@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 
 
+# 3주차 학습 때 X_train과 같은 컬럼 이름·순서·타입
 class CustomerInput(BaseModel):
     gender: str
     SeniorCitizen: int
@@ -26,12 +27,25 @@ class CustomerInput(BaseModel):
         "json_schema_extra": {
             "examples": [
                 {
-                    "gender": "Female", "SeniorCitizen": 0, "Partner": "No", "Dependents": "No",
-                    "tenure": 2, "PhoneService": "Yes", "MultipleLines": "No",
-                    "InternetService": "Fiber optic", "OnlineSecurity": "No", "OnlineBackup": "No",
-                    "DeviceProtection": "No", "TechSupport": "No", "StreamingTV": "No",
-                    "StreamingMovies": "No", "Contract": "Month-to-month", "PaperlessBilling": "Yes",
-                    "PaymentMethod": "Electronic check", "MonthlyCharges": 70.7, "TotalCharges": 151.65,
+                    "gender": "Female",
+                    "SeniorCitizen": 0,
+                    "Partner": "No",
+                    "Dependents": "No",
+                    "tenure": 12,
+                    "PhoneService": "Yes",
+                    "MultipleLines": "No",
+                    "InternetService": "Fiber optic",
+                    "OnlineSecurity": "No",
+                    "OnlineBackup": "No",
+                    "DeviceProtection": "No",
+                    "TechSupport": "No",
+                    "StreamingTV": "No",
+                    "StreamingMovies": "No",
+                    "Contract": "Month-to-month",
+                    "PaperlessBilling": "Yes",
+                    "PaymentMethod": "Electronic check",
+                    "MonthlyCharges": 70.5,
+                    "TotalCharges": 846.0,
                 }
             ]
         }

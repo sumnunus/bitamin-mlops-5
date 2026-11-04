@@ -1,27 +1,14 @@
-import logging
-from contextlib import asynccontextmanager
-from pathlib import Path
-
 import joblib
 import pandas as pd
 from fastapi import FastAPI
 
 from schema import CustomerInput
 
-logger = logging.getLogger("uvicorn.error")
-MODEL_PATH = Path(__file__).parent / "churn_model.joblib"
-model = None
+app = FastAPI()
 
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    global model
-    model = joblib.load(MODEL_PATH)  # 서버 시작 시 1번만 로드
-    logger.info(f"model loaded: {MODEL_PATH.name} ({type(model).__name__})")
-    yield
-
-
-app = FastAPI(title="Telco Churn Prediction API", lifespan=lifespan)
+# STEP 4: 서버 시작 시 한 번만 로드
+model = joblib.load("churn_model.joblib")
+print("model loaded:", type(model))
 
 
 @app.get("/")
@@ -29,10 +16,10 @@ def root():
     return {"message": "ok"}
 
 
+# STEP 5~6: 이탈 예측
 @app.post("/predict")
 def predict(data: CustomerInput):
-    X = pd.DataFrame([data.model_dump()])  # 학습 때와 같은 컬럼명으로 1행 DataFrame
-    return {
-        "churn": int(model.predict(X)[0]),
-        "churn_probability": float(model.predict_proba(X)[0][1]),
-    }
+    X = pd.DataFrame([data.model_dump()])
+    label = int(model.predict(X)[0])
+    proba = float(model.predict_proba(X)[0][1])
+    return {"churn": label, "churn_probability": proba}
