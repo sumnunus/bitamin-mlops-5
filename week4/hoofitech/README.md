@@ -3,9 +3,9 @@
 `week3`에서 저장한 `churn_model.joblib`(sklearn Pipeline)을 FastAPI로 서빙한다.
 
 ```bash
-cd week4
+cd week4/hoofitech
 python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
+pip install -r ../requirements.txt
 uvicorn main:app --reload
 ```
 
@@ -13,7 +13,7 @@ uvicorn main:app --reload
 | --- | --- |
 | `main.py` (hoofitech 실습 버전) | 앱, 서버 시작 시 모델 1회 로드(`lifespan`), `GET /`, `POST /predict` |
 | `schema.py` | 고객 정보 입력용 Pydantic 스키마 `CustomerInput` (+ Swagger 예시값) |
-| `churn_model.joblib` | 전처리 + 모델이 함께 저장된 Pipeline |
+| `../churn_model.joblib` | 전처리 + 모델이 함께 저장된 Pipeline (week4 공용) |
 
 ## API 명세
 
@@ -30,33 +30,33 @@ uvicorn main:app --reload
 ### 1. FastAPI 서버 기동 및 Swagger 접속
 `http://127.0.0.1:8000/docs`
 
-![cp1](images-hoofitech/cp1-docs.png)
+![cp1](images/cp1-docs.png)
 
 ### 2. Pydantic 스키마 정의
 `schema.py`의 `CustomerInput`이 Swagger Schemas에 표시된다.
 
-![cp2](images-hoofitech/cp2-schema.png)
+![cp2](images/cp2-schema.png)
 
 ### 3. 모델 로드 및 `/predict` 구현
 코드는 `main.py` 참고. `lifespan`에서 서버 시작 시 `churn_model.joblib`을 1번만 로드한다.
 
-![cp3](images-hoofitech/cp3-startup-log.png)
+![cp3](images/cp3-startup-log.png)
 
 ### 4. Swagger에서 예측 요청 성공
 POST `/predict` → Try it out → Execute → 200
 
-![cp4](images-hoofitech/cp4-swagger-predict.png)
+![cp4](images/cp4-swagger-predict.png)
 
 ### 5. Postman으로 동일 요청 테스트
 같은 고객 데이터로 POST → `200 OK`, Swagger와 같은 확률
 
-![cp5](images-hoofitech/cp5-postman.png)
+![cp5](images/cp5-postman.png)
 
 `{"churn": 1, "churn_probability": 0.85102503974859}`
 
 형식이 틀린 입력(예: `{"tenure":"abc"}`)은 `422`로 차단된다.
 
-> 팀 공용 코드는 `main.py` / `schema.py` / `README.md`(main 브랜치). 이 문서의 캡처는 `lifespan` 방식으로 모델을 로드한 개인 실습 버전(`main.py`)으로 찍은 것이다.
+> 이 폴더는 `lifespan` 방식으로 모델을 로드한 개인 실습 버전이다. 팀 공용 코드는 상위 `week4/`의 `main.py`·`schema.py`. 모델 파일은 `week4/churn_model.joblib`을 같이 쓴다.
 
 ```python
 @asynccontextmanager
